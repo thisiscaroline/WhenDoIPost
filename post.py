@@ -44,18 +44,14 @@ def main():
 	count = 1
 	tweetList = []
 	
-	# Fetch tweets
+	# Fetch tweets, change timezones
 	for tweet in tweepy.Cursor(api.user_timeline, id=username).items(tweetCount):
 			
 		try:
-			if (tweet.text[:2] == "RT"):
-				print("\x1b[1;33mRetweet \x1b[0m")
-			else:
-				print(str(count)+": "+tweet.text+"\x1b[1;32m\n\t"+str(tweet.created_at)+"\x1b[0m", end=" >> ")
-				tweetList.append(tweet.created_at)
-				local_tz = pytz.timezone('America/New_York')
-				local_dt = tweet.created_at.replace(tzinfo=pytz.utc).astimezone(local_tz)
-				print(str(local_dt)+'\n')
+			# print(str(count)+": "+tweet.text+"\x1b[1;32m\n\t"+str(tweet.created_at)+"\x1b[0m", end=" >> ")
+			local_tz = localize_times(tweet.created_at)
+			tweetList.append(local_tz)
+			# print(str(local_tz.ctime())+'\n')
 		except:
 			# TODO: Error checking, replace emoji?
 			pass
@@ -66,17 +62,22 @@ def main():
 	# x: Day of the week; y: Time they tweeted
 	for i in range(0, len(tweetList)):
 			
-		#print(tweetList[i], end=": ")
+		print(tweetList[i].ctime(), end=": ")
 		x = form_x(str(tweetList[i].ctime()))
 		y = form_y(tweetList[i])
-		#print(str(x)+", "+str(y))
+		print(str(x)+", "+str(y))
 	
 	# plt.show()
+	
+# Changes timezone from UTC to EST
+def localize_times(utcTime):
+	local_tz = pytz.timezone('America/New_York')
+	local_dt = utcTime.replace(tzinfo=pytz.utc).astimezone(local_tz)
+	return local_dt
 	
 # Decides and returns an x-coordinate
 def form_x(tweet):
 	
-	# print(tweet[:3], end=": ")
 	return {
 		'Sun': 1,
 		'Mon': 2,
