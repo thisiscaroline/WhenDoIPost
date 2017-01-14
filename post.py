@@ -15,8 +15,7 @@ api = tweepy.API(auth)
 
 def main():
 
-	# Check for a help flag
-	try:
+	try:		# Check for a help flag
 		if sys.argv[1] == "-h":
 			print("To use: py post.py [username] [number of tweets]")
 			sys.exit()
