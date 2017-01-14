@@ -1,8 +1,11 @@
 # When Do I Post? - Fetches tweet post times and graphs them
 
-import tweepy
-from tweepy import OAuthHandler
+import datetime
+# import matplotlib.pyplot as plt
 import sys
+import tweepy
+
+from tweepy import OAuthHandler
 
 consumerKey = 'YOUR_CONSUMER_KEY'
 consumerSecret = 'YOUR_CONSUMER_SECRET'
@@ -32,9 +35,33 @@ def main():
 	
 	# Fetch tweets
 	tweets = api.user_timeline(screen_name = username, count = tweetCount)
+	s = Stack()
 	
 	for tweet in tweets:
-		print(tweet.created_at)
+		tweetDate = tweet.created_at	# tweet.created_at == datetime.datetime object
+		s.push(tweetDate)
 		
+	print("\n\n")
+	
+	for i in range(0, s.size()):
+		print(str(i+1)+": "+str(s.pop().ctime()))
+		
+
+
+# Simple stack implementation
+class Stack:
+		def __init__(self):
+			self.container = []
+		def isEmpty(self):
+			return self.size == 0
+		def push(self, item):
+			self.container.append(item)
+		def pop(self):
+			return self.container.pop()
+		def peek(self):
+			print((self.container[len(self.container)-1]).ctime())
+		def size(self):	
+			return len(self.container)
+			
 if __name__ == '__main__':
 	main()
