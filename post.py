@@ -41,20 +41,19 @@ def main():
 	plt.xlabel('Days')
 	plt.ylabel('Hours')
 	
+	# Variables for later use
 	count = 1
+	clr = 'g'
 	tweetList = []
 	
 	# Fetch tweets, change timezones
 	for tweet in tweepy.Cursor(api.user_timeline, id=username).items(tweetCount):
 			
 		try:
-			# print(str(count)+": "+tweet.text+"\x1b[1;32m\n\t"+str(tweet.created_at)+"\x1b[0m", end=" >> ")
 			local_tz = localize_times(tweet.created_at)
 			tweetList.append(local_tz)
-			# print(str(local_tz.ctime())+'\n')
 		except:
-			# TODO: Error checking, replace emoji?
-			pass
+			pass # TODO: Error checking, replace emoji?
 			
 		count+=1
 	
@@ -63,16 +62,32 @@ def main():
 	for i in range(0, len(tweetList)):
 			
 		print(tweetList[i].ctime(), end=": ")
+		
 		x = form_x(str(tweetList[i].ctime()))
 		y = form_y(tweetList[i])
-		print(str(x)+", "+str(y))
+		
+		coord = str(x)+", "+str(y)
+		
+		# Set AM or PM colors
+		if tweetList[i].hour < 12:
+			clr = 'r'
+			print("\x1b[1;31m%s\x1b[0m" % coord)
+		else:
+			clr = 'b'
+			print("\x1b[1;34m%s\x1b[0m" % coord)
+		
+		# Plot the coordinates on the graph
+		plt.scatter(x, y, color=clr, marker='o', s=100)
+		# input() # Add if you want to see coordinates
 	
-	# plt.show()
-	
+	plt.show()
+		
 # Changes timezone from UTC to EST
 def localize_times(utcTime):
+
 	local_tz = pytz.timezone('America/New_York')
 	local_dt = utcTime.replace(tzinfo=pytz.utc).astimezone(local_tz)
+	
 	return local_dt
 	
 # Decides and returns an x-coordinate
