@@ -1,8 +1,8 @@
 # When Do I Post? - Fetches tweet post times and graphs them
 
-import datetime
 import math
 import matplotlib.pyplot as plt
+import pytz
 import sys
 import tweepy
 
@@ -45,16 +45,32 @@ def main():
 	plt.xlabel('Days')
 	plt.ylabel('Hours')
 	
-	# Add tweet timestamps to list
+	# Add tweet timestamps to list; time is in UTC
 	for tweet in tweets:
+	
+		try:
+			if (tweet.text[:2] == "RT"):
+				print("\x1b[1;32mRetweet \x1b[0m", end=" ")
+			print(tweet.text, end="\n")
+		except:
+			# TODO: Error checking, replace emoji?
+			pass
+			
 		tweetList.append(tweet.created_at)
+		print("\t"+str(tweet.created_at)+"\n")
 	
 	# Create data points out of each timestamp
 	# x: Day of the week; y: Time they tweeted
 	for i in range(0, len(tweetList)):
+		
+		tz = pytz.timezone('America/New_York')
+		timestamp = tz.localize(tweetList[i])
+		# print(str(timestamp))
+		
+		#print(tweetList[i], end=": ")
 		x = form_x(str(tweetList[i].ctime()))
 		y = form_y(tweetList[i])
-		#print(tweetList[i].ctime())
+		#print(str(x)+", "+str(y))
 	
 	# plt.show()
 	
