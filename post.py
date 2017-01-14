@@ -33,28 +33,44 @@ def main():
 		username = input("Enter a username:\n>> ")
 		tweetCount = input("Enter the number of tweets you'd like to analyze:\n>> ")
 	
+	print('\n')
+	
 	# Fetch tweets
 	tweets = api.user_timeline(screen_name = username, count = tweetCount)
 	tweetList = []
-	
-	print('\n')
-	
-	# Print tweet times
-	for tweet in tweets:
-		print("\x1b[1;32m%s\x1b[0m" % str(tweet.created_at))
-		tweetList.append(tweet.created_at)
-	
-	print('\n')
-	
-	for i in range(0, len(tweetList)):
-		print(tweetList[i])
-	
 	
 	# Create a graph
 	plt.axis([1,7,0,12])
 	plt.xlabel('Days')
 	plt.ylabel('Hours')
-	plt.show()
+	
+	# Add tweet timestamps to list
+	for tweet in tweets:
+		tweetList.append(tweet.created_at)
+	
+	# Create data points out of each timestamp
+	# x: Day of the week; y: Time they tweeted
+	for i in range(0, len(tweetList)):
+		x = form_x(str(tweetList[i].ctime()))
+		#y = form_y(tweetList[i])
+		#print(tweetList[i].ctime())
+	
+	# plt.show()
+	
+# Decides and returns an x-coordinate
+def form_x(tweet):
+	
+	print(tweet[:3], end=": ")
+	return {
+		'Sun': 1,
+		'Mon': 2,
+		'Tue': 3,
+		'Wed': 4,
+		'Thu': 5,
+		'Fri': 6,
+		'Sat': 7,
+	}[tweet[:3]]
+		
 			
 if __name__ == '__main__':
 	main()
