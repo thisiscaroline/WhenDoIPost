@@ -29,44 +29,43 @@ def main():
 	# Get username, number of tweets
 	if len(sys.argv) == 3:
 		username = sys.argv[1]
-		tweetCount = sys.argv[2]
+		tweetCount = int(sys.argv[2])
 	else:
 		username = input("Enter a username:\n>> ")
 		tweetCount = input("Enter the number of tweets you'd like to analyze:\n>> ")
 	
 	print('\n')
 	
-	# Fetch tweets
-	tweets = api.user_timeline(screen_name = username, count = tweetCount)
-	tweetList = []
-	
 	# Create a graph
 	plt.axis([1,7,0,12])
 	plt.xlabel('Days')
 	plt.ylabel('Hours')
 	
-	# Add tweet timestamps to list; time is in UTC
-	for tweet in tweets:
+	count = 1
+	tweetList = []
 	
+	# Fetch tweets
+	for tweet in tweepy.Cursor(api.user_timeline, id=username).items(tweetCount):
+			
 		try:
 			if (tweet.text[:2] == "RT"):
-				print("\x1b[1;32mRetweet \x1b[0m", end=" ")
-			print(tweet.text, end="\n")
+				print("\x1b[1;33mRetweet \x1b[0m")
+			else:
+				print(str(count)+": "+tweet.text+"\x1b[1;32m\n\t"+str(tweet.created_at)+"\x1b[0m", end=" >> ")
+				tweetList.append(tweet.created_at)
+				local_tz = pytz.timezone('America/New_York')
+				local_dt = tweet.created_at.replace(tzinfo=pytz.utc).astimezone(local_tz)
+				print(str(local_dt)+'\n')
 		except:
 			# TODO: Error checking, replace emoji?
 			pass
 			
-		tweetList.append(tweet.created_at)
-		print("\t"+str(tweet.created_at)+"\n")
+		count+=1
 	
 	# Create data points out of each timestamp
 	# x: Day of the week; y: Time they tweeted
 	for i in range(0, len(tweetList)):
-		
-		tz = pytz.timezone('America/New_York')
-		timestamp = tz.localize(tweetList[i])
-		# print(str(timestamp))
-		
+			
 		#print(tweetList[i], end=": ")
 		x = form_x(str(tweetList[i].ctime()))
 		y = form_y(tweetList[i])
