@@ -35,38 +35,26 @@ def main():
 	
 	# Fetch tweets
 	tweets = api.user_timeline(screen_name = username, count = tweetCount)
-	s = Stack()
-	
-	# Push tweets onto a stack; oldest tweet is at the top
-	for tweet in tweets:
-		s.push(tweet.created_at)
+	tweetList = []
 	
 	print('\n')
 	
-	for i in range(0, s.size()):
-		tweetDate = str(s.pop().ctime())
-		print(str(i+1)+": "+tweetDate)
+	# Print tweet times
+	for tweet in tweets:
+		print("\x1b[1;32m%s\x1b[0m" % str(tweet.created_at))
+		tweetList.append(tweet.created_at)
+	
+	print('\n')
+	
+	for i in range(0, len(tweetList)):
+		print(tweetList[i])
+	
 	
 	# Create a graph
 	plt.axis([1,7,0,12])
 	plt.xlabel('Days')
 	plt.ylabel('Hours')
 	plt.show()
-
-# Simple stack implementation
-class Stack:
-		def __init__(self):
-			self.container = []
-		def isEmpty(self):
-			return self.size == 0
-		def push(self, item):
-			self.container.append(item)
-		def pop(self):
-			return self.container.pop()
-		def peek(self):
-			print((self.container[len(self.container)-1]).ctime())
-		def size(self):	
-			return len(self.container)
 			
 if __name__ == '__main__':
 	main()
