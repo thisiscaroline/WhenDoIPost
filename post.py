@@ -1,6 +1,7 @@
 # When Do I Post? - Fetches tweet post times and graphs them
 
 import datetime
+import math
 import matplotlib.pyplot as plt
 import sys
 import tweepy
@@ -52,7 +53,7 @@ def main():
 	# x: Day of the week; y: Time they tweeted
 	for i in range(0, len(tweetList)):
 		x = form_x(str(tweetList[i].ctime()))
-		#y = form_y(tweetList[i])
+		y = form_y(tweetList[i])
 		#print(tweetList[i].ctime())
 	
 	# plt.show()
@@ -60,7 +61,7 @@ def main():
 # Decides and returns an x-coordinate
 def form_x(tweet):
 	
-	print(tweet[:3], end=": ")
+	# print(tweet[:3], end=": ")
 	return {
 		'Sun': 1,
 		'Mon': 2,
@@ -70,7 +71,27 @@ def form_x(tweet):
 		'Fri': 6,
 		'Sat': 7,
 	}[tweet[:3]]
-		
+
+# Converts 24h time to 12h, minutes to increments
+def form_y(tweet):
+	
+	# print(str(tweet.hour)+":"+str(tweet.minute))
+	hour, minutes = 0, 0
+	
+	# Mod the hour, if necessary
+	if (tweet.hour == 0):		# Midnight
+		hour = 0
+	elif (tweet.hour < 12):		# AM hours
+		hour = tweet.hour
+	elif (tweet.hour == 12):	# Noon
+		hour = 12
+	elif (tweet.hour > 12):		# PM hours
+		hour = (tweet.hour % 12)
+	
+	# Minutes as a fraction of the hour
+	minutes = round(tweet.minute/60,2)
+	
+	return (hour+minutes)
 			
 if __name__ == '__main__':
 	main()
