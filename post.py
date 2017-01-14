@@ -1,7 +1,7 @@
 # When Do I Post? - Fetches tweet post times and graphs them
 
 import datetime
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import sys
 import tweepy
 
@@ -37,16 +37,21 @@ def main():
 	tweets = api.user_timeline(screen_name = username, count = tweetCount)
 	s = Stack()
 	
+	# Push tweets onto a stack; oldest tweet is at the top
 	for tweet in tweets:
-		tweetDate = tweet.created_at	# tweet.created_at == datetime.datetime object
-		s.push(tweetDate)
-		
-	print("\n\n")
+		s.push(tweet.created_at)
+	
+	print('\n')
 	
 	for i in range(0, s.size()):
-		print(str(i+1)+": "+str(s.pop().ctime()))
-		
-
+		tweetDate = str(s.pop().ctime())
+		print(str(i+1)+": "+tweetDate)
+	
+	# Create a graph
+	plt.axis([1,7,0,12])
+	plt.xlabel('Days')
+	plt.ylabel('Hours')
+	plt.show()
 
 # Simple stack implementation
 class Stack:
