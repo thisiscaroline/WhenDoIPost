@@ -43,7 +43,7 @@ def main():
 	
 	# Variables for later use
 	count = 1
-	clr = 'g'
+	clr = 'green'
 	tweetList = []
 	
 	# Fetch tweets, change timezones
