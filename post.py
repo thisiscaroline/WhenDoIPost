@@ -11,16 +11,28 @@ accessSecret = 'YOUR_ACCESS_SECRET'
 
 auth = OAuthHandler(consumerKey, consumerSecret)
 auth.set_access_token(accessToken, accessSecret)
-
 api = tweepy.API(auth)
 
 def main():
 
-	# Pick a username
-	username = input("Enter a username here: \n>> ")
+	# Check for a help flag
+	try:
+		if sys.argv[1] == "-h":
+			print("To use: py post.py [username] [number of tweets]")
+			sys.exit()
+	except:
+		pass	# Do nothing
+
+	# Get username, number of tweets
+	if len(sys.argv) == 3:
+		username = sys.argv[1]
+		tweetCount = sys.argv[2]
+	else:
+		username = input("Enter a username:\n>> ")
+		tweetCount = input("Enter the number of tweets you'd like to analyze:\n>> ")
 	
 	# Fetch tweets
-	tweets = api.user_timeline(screen_name = username, count=10)
+	tweets = api.user_timeline(screen_name = username, count = tweetCount)
 	
 	for tweet in tweets:
 		print(tweet.created_at)
