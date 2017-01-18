@@ -57,6 +57,10 @@ def main():
 			
 		count+=1
 	
+	# Set title to show earliest tweet date
+	dateFormat = "Post times for all tweets since "+str(tweetList[count-2].ctime())[:10]+" "+str(tweetList[count-2].year)
+	plt.suptitle(dateFormat, fontsize=16, fontweight='bold')
+	
 	# Create data points out of each timestamp
 	# x: Day of the week; y: Time they tweeted
 	for i in range(0, len(tweetList)):
